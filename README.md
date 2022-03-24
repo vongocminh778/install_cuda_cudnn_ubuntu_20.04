@@ -6,8 +6,7 @@
         $ ubuntu-drivers devices
 	$ sudo apt install nvidia-driver-... # driver recommended
 	$ sudo reboot
-	
-	 ```
+	```
 	
 * Install update and upgrade your system:
     	```
