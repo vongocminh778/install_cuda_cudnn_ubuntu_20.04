@@ -1,4 +1,4 @@
-# How to install OpenCV 4.5.2 with CUDA 11.2 and CUDNN 8.2 in Ubuntu 20.04
+# How to install OpenCV 4.5.2 with CUDA 11.4 and CUDNN 8.2 in Ubuntu 20.04
 
 * Install Driver Nvidia in Ubuntu
  	```
