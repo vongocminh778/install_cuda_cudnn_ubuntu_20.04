@@ -1,16 +1,24 @@
 # How to install OpenCV 4.5.2 with CUDA 11.2 and CUDNN 8.2 in Ubuntu 20.04
-
-First of all install update and upgrade your system:
-    
+Install Driver Nvidia in Ubuntu
+ 	```
+ 	$ sudo add-apt-repository ppa:graphics-drivers/ppa
+        $ ubuntu-drivers devices
+	$ sudo apt install nvidia-driver-... # driver recommended
+	$ sudo reboot
+	 ```
+	
+Install update and upgrade your system:
+    	```
         $ sudo apt update
         $ sudo apt upgrade
-   
+   	```
     
 Then, install required libraries:
 
 * Generic tools:
-
+	```
         $ sudo apt install build-essential cmake pkg-config unzip yasm git checkinstall
+	```
     
 * Image I/O libs
     ``` 
@@ -60,87 +68,62 @@ Then, install required libraries:
     $ sudo apt-get install libgoogle-glog-dev libgflags-dev
     $ sudo apt-get install libgphoto2-dev libeigen3-dev libhdf5-dev doxygen
     ```
+* Installing Cuda 11.4 and drivers
+ 	```
+	    $ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
+	    $ sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+	    $ wget https://developer.download.nvidia.com/compute/cuda/11.4.1/local_installers/cuda-repo-ubuntu2004-11-4-local_11.4.1-470.57.02-1_amd64.deb
+	    $ sudo dpkg -i cuda-repo-ubuntu2004-11-4-local_11.4.1-470.57.02-1_amd64.deb
+	    $ sudo apt-key add /var/cuda-repo-ubuntu2004-11-4-local/7fa2af80.pub
+	    $ sudo apt-get update
+	    $ sudo apt-get -y install cuda
+	```
+* Add Path
+	```
+	$ vim ~/.bashrc
+	#A reminder that the 2 lines below are no commands, they have to be added to the bashrc
+	export PATH="/usr/local/cuda-11.4/bin:$PATH"
+	export LD_LIBRARY_PATH="/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH"
+	$ sudo reboot
+	```
+* Check Path 
+	```
+	$ nvidia-smi
+	$ nvcc --version
+	```
+* Installing cuDNN 8.2.2
+	```
+	$ wget https://developer.nvidia.com/compute/machine-learning/cudnn/secure/8.2.2/11.4_07062021/cudnn-11.4-linux-x64-v8.2.2.26.tgz
+	$ tar -xzvf cudnn-11.4-linux-x64-v8.2.2.26.tgz
+	$ sudo cp cuda/include/cudnn*.h /usr/local/cuda/include
+	$ sudo cp -P cuda/lib64/libcudnn* /usr/local/cuda/lib64
+	$ sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+	$ sudo cp -P cuda/include/cudnn.h /usr/include
+	$ sudo cp -P cuda/lib64/libcudnn* /usr/lib/x86_64-linux-gnu/
+	$ sudo chmod a+r /usr/lib/x86_64-linux-gnu/libcudnn*
+	$ sudo reboot
+	$ whereis cudnn
+	```
+* We will now proceed with the installation (see the Qt flag that is disabled to do not have conflicts with Qt5.0).
 
-We will now proceed with the installation (see the Qt flag that is disabled to do not have conflicts with Qt5.0).
-
-    $ cd ~/Downloads
-    $ wget -O opencv.zip https://github.com/opencv/opencv/archive/refs/tags/4.5.2.zip
-    $ wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/refs/tags/4.5.2.zip
-    $ unzip opencv.zip
-    $ unzip opencv_contrib.zip
-    
-    $ echo "Create a virtual environtment for the python binding module (OPTIONAL)"
-    $ sudo pip install virtualenv virtualenvwrapper
-    $ sudo rm -rf ~/.cache/pip
-    $ echo "Edit ~/.bashrc"
-    $ export WORKON_HOME=$HOME/.virtualenvs
-    $ export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-    $ source /usr/local/bin/virtualenvwrapper.sh
-    $ mkvirtualenv cv -p python3
-    $ pip install numpy
-    
-    $ echo "Procced with the installation"
-    $ cd opencv-4.5.2
-    $ mkdir build
-    $ cd build
-    
-    cmake -D CMAKE_BUILD_TYPE=RELEASE \
-	-D CMAKE_INSTALL_PREFIX=/usr/local \
-	-D WITH_TBB=ON \
-	-D ENABLE_FAST_MATH=1 \
-	-D CUDA_FAST_MATH=1 \
-	-D WITH_CUBLAS=1 \
-	-D WITH_CUDA=ON \
-	-D BUILD_opencv_cudacodec=OFF \
-	-D WITH_CUDNN=ON \
-	-D OPENCV_DNN_CUDA=ON \
-	-D CUDA_ARCH_BIN=7.5 \
-	-D WITH_V4L=ON \
-	-D WITH_QT=OFF \
-	-D WITH_OPENGL=ON \
-	-D WITH_GSTREAMER=ON \
-	-D OPENCV_GENERATE_PKGCONFIG=ON \
-	-D OPENCV_PC_FILE_NAME=opencv.pc \
-	-D OPENCV_ENABLE_NONFREE=ON \
-	-D OPENCV_PYTHON3_INSTALL_PATH=~/.virtualenvs/cv/lib/python3.8/site-packages \
-	-D PYTHON_EXECUTABLE=~/.virtualenvs/cv/bin/python \
-	-D OPENCV_EXTRA_MODULES_PATH=~/Downloads/opencv_contrib-4.5.2/modules \
-	-D INSTALL_PYTHON_EXAMPLES=OFF \
-	-D INSTALL_C_EXAMPLES=OFF \
-	-D BUILD_EXAMPLES=OFF ..
+	$ cd ~/Downloads
+	$ wget -O opencv.zip https://github.com/opencv/opencv/archive/refs/tags/4.5.2.zip
+	$ wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/refs/tags/4.5.2.zip
+	$ unzip opencv.zip
+	$ unzip opencv_contrib.zip
+	$ cd opencv-4.5.2
+	$ mkdir build
+	$ cd build
 	
-
-If you want to build the libraries statically you only have to include the *-D  BUILD_SHARED_LIBS=OFF*
-
-    $ cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_C_COMPILER=/usr/bin/gcc-6 -D CMAKE_INSTALL_PREFIX=/usr/local -D INSTALL_PYTHON_EXAMPLES=ON -D INSTALL_C_EXAMPLES=OFF -D WITH_TBB=ON -D WITH_CUDA=ON -D BUILD_opencv_cudacodec=OFF -D ENABLE_FAST_MATH=1 -D CUDA_FAST_MATH=1 -D WITH_CUBLAS=1 -D WITH_V4L=ON -D WITH_QT=OFF -D WITH_OPENGL=ON -D WITH_GSTREAMER=ON -D OPENCV_GENERATE_PKGCONFIG=ON -D OPENCV_PC_FILE_NAME=opencv.pc -D OPENCV_ENABLE_NONFREE=ON -D OPENCV_PYTHON3_INSTALL_PATH=~/.virtualenvs/cv/lib/python3.8/site-packages -D OPENCV_EXTRA_MODULES_PATH=~/downloads/opencv/opencv_contrib-4.5.2/modules -D PYTHON_EXECUTABLE=~/.virtualenvs/cv/bin/python -D BUILD_EXAMPLES=ON -D BUILD_SHARED_LIBS=OFF ..
-    
-In case you do not want to include include CUDA set *-D WITH_CUDA=OFF*     
-
-    $ cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_C_COMPILER=/usr/bin/gcc-6 -D CMAKE_INSTALL_PREFIX=/usr/local -D INSTALL_PYTHON_EXAMPLES=ON -D INSTALL_C_EXAMPLES=OFF -D WITH_TBB=ON -D WITH_CUDA=OFF -D BUILD_opencv_cudacodec=OFF -D ENABLE_FAST_MATH=1 -D CUDA_FAST_MATH=1 -D WITH_CUBLAS=1 -D WITH_V4L=ON -D WITH_QT=OFF -D WITH_OPENGL=ON -D WITH_GSTREAMER=ON -D OPENCV_GENERATE_PKGCONFIG=ON -D OPENCV_PC_FILE_NAME=opencv.pc -D OPENCV_ENABLE_NONFREE=ON -D OPENCV_PYTHON3_INSTALL_PATH=~/.virtualenvs/cv/lib/python3.8/site-packages -D OPENCV_EXTRA_MODULES_PATH=~/downloads/opencv/opencv_contrib-4.5.2/modules -D PYTHON_EXECUTABLE=~/.virtualenvs/cv/bin/python -D BUILD_EXAMPLES=ON ..
-    
-If you want also to use CUDNN you must include those flags (to set the correct value of CUDA_ARCH_BIN you must visit https://developer.nvidia.com/cuda-gpus and find the Compute Capability CC of your graphic card). If you have problems with the setting up of CUDDN check the *List of documented problems*:
-
-	-D WITH_CUDNN=ON \
-	-D OPENCV_DNN_CUDA=ON \
-	-D CUDA_ARCH_BIN=7.5 \
-
-Before the compilation you must check that CUDA has been enabled in the configuration summary printed on the screen. (If you have problems with the CUDA Architecture go to the end of the document).
-
-```
---   NVIDIA CUDA:                   YES (ver 11.2, CUFFT CUBLAS FAST_MATH)
---     NVIDIA GPU arch:             75
---     NVIDIA PTX archs:
--- 
---   cuDNN:                         YES (ver 8.2.0)
-
-```
-
-I've included below the output of my [configuration](#configuration-information).
+* Use Cmake build opencv following https://www.youtube.com/watch?v=whAFl-izD-4
+	$ cd build
+	$ sudo apt install cmake cmake-gui
+	....
 
 If it is fine proceed with the compilation (Use nproc to know the number of cpu cores):
     
     $ nproc
-    $ make -j8
+    $ make -j12
     $ sudo make install
 
 Include the libs in your environment    
