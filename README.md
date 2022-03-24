@@ -8,11 +8,11 @@
 	$ sudo reboot
 	```
 	
-* Install update and upgrade your system:
-	'''
-	$ sudo apt update
+* Install update and upgrade your system
+	```
+        $ sudo apt update
 	$ sudo apt upgrade
-	'''
+	```
     
 Then, install required libraries:
 
