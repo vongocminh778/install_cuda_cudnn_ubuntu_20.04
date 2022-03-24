@@ -9,10 +9,10 @@
 	```
 	
 * Install update and upgrade your system:
-    	```
-        $ sudo apt update
-        $ sudo apt upgrade
-   	```
+	'''
+	$ sudo apt update
+	$ sudo apt upgrade
+	'''
     
 Then, install required libraries:
 
