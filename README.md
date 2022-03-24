@@ -106,7 +106,7 @@ Then, install required libraries:
 	$ whereis cudnn
 	```
 * We will now proceed with the installation (see the Qt flag that is disabled to do not have conflicts with Qt5.0).
-
+	```
 	$ cd ~/Downloads
 	$ wget -O opencv.zip https://github.com/opencv/opencv/archive/refs/tags/4.5.2.zip
 	$ wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/refs/tags/4.5.2.zip
@@ -115,17 +115,20 @@ Then, install required libraries:
 	$ cd opencv-4.5.2
 	$ mkdir build
 	$ cd build
-	
+	```
 * Use Cmake build opencv following https://www.youtube.com/watch?v=whAFl-izD-4
+	```
 	$ cd build
 	$ sudo apt install cmake cmake-gui
 	....
+	```
 
 If it is fine proceed with the compilation (Use nproc to know the number of cpu cores):
-    
+    ```
     $ nproc
     $ make -j12
     $ sudo make install
+    ```
 
 Include the libs in your environment    
     
