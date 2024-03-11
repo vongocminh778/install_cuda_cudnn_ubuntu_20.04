@@ -81,10 +81,13 @@ Then, install required libraries:
 	```
 * Add Path
 	```
-	$ vim ~/.bashrc
+	$ nano ~/.bashrc
 	#A reminder that the 2 lines below are no commands, they have to be added to the bashrc
-	export PATH="/usr/local/cuda-11.4/bin:$PATH"
-	export LD_LIBRARY_PATH="/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH"
+		export CUDA_HOME=/usr/local/cuda
+		export PATH=/usr/local/cuda/bin:$PATH
+		export CPATH=/usr/local/cuda/include:$CPATH
+		export LIBRARY_PATH=/usr/local/cuda/lib64:$LIBRARY_PATH
+		export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 	$ sudo reboot
 	```
 * Check Path 
@@ -116,6 +119,32 @@ Then, install required libraries:
 	$ mkdir build
 	$ cd build
 	```
+ * Use CmakeLists.txt
+   ```
+   cmake -D CMAKE_BUILD_TYPE=RELEASE \
+-D CMAKE_INSTALL_PREFIX=/usr/local \
+-D WITH_TBB=ON \
+-D ENABLE_FAST_MATH=1 \
+-D CUDA_FAST_MATH=1 \
+-D WITH_CUBLAS=1 \
+-D WITH_CUDA=ON \
+-D BUILD_opencv_cudacodec=OFF \
+-D WITH_CUDNN=ON \
+-D OPENCV_DNN_CUDA=ON \
+-D CUDA_ARCH_BIN=7.5 \
+-D WITH_V4L=ON \
+-D WITH_QT=OFF \
+-D WITH_OPENGL=ON \
+-D WITH_GSTREAMER=ON \
+-D OPENCV_GENERATE_PKGCONFIG=ON \
+-D OPENCV_PC_FILE_NAME=opencv.pc \
+-D OPENCV_ENABLE_NONFREE=ON \
+-D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages \
+-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \
+-D INSTALL_PYTHON_EXAMPLES=OFF \
+-D INSTALL_C_EXAMPLES=OFF \
+-D BUILD_EXAMPLES=OFF ..
+   ```
 * Use Cmake build opencv following https://www.youtube.com/watch?v=whAFl-izD-4
 	```
 	$ cd build
