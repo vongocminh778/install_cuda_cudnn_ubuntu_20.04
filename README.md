@@ -489,3 +489,12 @@ sudo apt install libcudnn7-dev  libcudnn7-doc  libcudnn7 nvidia-container-csv-cu
 - [Medium](https://medium.com/@debugvn/installing-opencv-3-3-0-on-ubuntu-16-04-lts-7db376f93961)
 - [Previous Gist](https://gist.github.com/raulqf/a3caa97db3f8760af33266a1475d0e5e)
 - https://askubuntu.com/questions/348838/how-to-check-available-webcams-from-the-command-line(check camera)
+
+lỗi 
+/home/thuanvo/opencv/modules/core/include/opencv2/core/private.cuda.hpp:59:12: fatal error: cuda.h: No such file or directory
+   59 | #  include <cuda.h>
+```
+sudo cp /usr/local/cuda/include/* .
+sudo cp -r /usr/local/cuda/include/* .
+
+```
